@@ -103,20 +103,10 @@ const products = [
       'https://thumb.pccomponentes.com/w-150-150/articles/1079/10792747/1824-acer-nitro-v-15-anv15-51-51pq-intel-core-i5-13420h-16gb-1tb-ssd-rtx-3050-156-review.jpg'
   }
 ]
-// const filtrar = () => {
-//   const filtered = []
 
-//   for (const producto of products) {
-//     if (vendor.includes(producto.seller)) {
-//       filtered.push(vendor)
-//     }
-//   }
-//   console.log(filtered)
-//   pintarProductos(filtered)
-// }
 const pintarProductos = (listadoProductos) => {
   const portatiles = document.querySelector('#app')
-
+  portatiles.innerHTML = ''
   for (const producto of listadoProductos) {
     let productoHTML = `
           <div class="producto">
@@ -132,7 +122,23 @@ const pintarProductos = (listadoProductos) => {
     portatiles.innerHTML += productoHTML
   }
 }
+const filtrar = () => {
+  const filtered = []
 
+  for (const producto of products) {
+    if (vendor.includes(producto.seller)) {
+      filtered.push(producto)
+    } else {
+    }
+  }
+  console.log(filtered)
+  console.log(vendor)
+  if (vendor == '') {
+    pintarProductos(products)
+  } else {
+    pintarProductos(filtered)
+  }
+}
 const myForm = document.createElement('form')
 
 // document.body.appendChild(myFieldSet)
@@ -142,29 +148,40 @@ const pintarFiltroVendedores = (listadoProductos) => {
   myFieldSet.classList.add('vendorClass')
   const vendorFilterLabel = document.createElement('label')
   vendorFilterLabel.innerHTML = 'Filtra por Vendedor'
+  vendorFilterLabel.setAttribute('for', 'vendorFilter')
   myFieldSet.appendChild(vendorFilterLabel)
   let mySelector = document.createElement('select')
-  mySelector.innerHTML = `<option>Sin Filtro</option>`
+  mySelector.id = 'vendorFilter'
+  mySelector.innerHTML = `<option value="">Sin Filtro</option>`
   //crear lista sin duplicados
   let DuplicatedVendors = listadoProductos.map((vendedor) => vendedor.seller)
   let vendors = new Set(DuplicatedVendors)
   let listOfVendors = [...vendors]
   //añadir todas las opciones
   listOfVendors.forEach((vendor) => {
-    mySelector.innerHTML += `<option> ${vendor}</option>` //value tiene que ser insertado de otra manera value = ${vendor}
+    let vendorNoSpace = vendor.replace(/\s/g, '')
+    mySelector.innerHTML += `<option value = "${vendor}"> ${vendor}</option>` //value tiene que ser insertado de otra manera value = ${vendor}
   })
   //pintar formularios
   myFieldSet.appendChild(mySelector)
   myForm.appendChild(myFieldSet)
-  console.log('hola')
+
   //avisa que algo cambia!
   mySelector.addEventListener('change', (event) => {
-    console.log(event.target.value)
     vendor = event.target.value
     filtrar()
   })
 }
+const pintarFiltroPrecios = (listadoProductos) => {
+  const myFieldSet = document.createElement('fieldset')
+  myFieldSet.classList.add('priceClass')
+  const vendorFilterLabel = document.createElement('label')
+  vendorFilterLabel.innerHTML = 'Filtra por Vendedor'
+  myFieldSet.appendChild(vendorFilterLabel)
+}
 
 document.getElementById('app').insertAdjacentElement('beforebegin', myForm)
-pintarFiltroVendedores(products)
+
 pintarProductos(products)
+pintarFiltroVendedores(products)
+pintarFiltroPrecios(products)
