@@ -122,7 +122,7 @@ const pintarProductos = (listadoProductos) => {
     portatiles.innerHTML += productoHTML
   }
 }
-const filtrar = () => {
+const filtrarVendors = () => {
   const filtered = []
 
   for (const producto of products) {
@@ -159,7 +159,6 @@ const pintarFiltroVendedores = (listadoProductos) => {
   let listOfVendors = [...vendors]
   //añadir todas las opciones
   listOfVendors.forEach((vendor) => {
-    let vendorNoSpace = vendor.replace(/\s/g, '')
     mySelector.innerHTML += `<option value = "${vendor}"> ${vendor}</option>` //value tiene que ser insertado de otra manera value = ${vendor}
   })
   //pintar formularios
@@ -169,15 +168,28 @@ const pintarFiltroVendedores = (listadoProductos) => {
   //avisa que algo cambia!
   mySelector.addEventListener('change', (event) => {
     vendor = event.target.value
-    filtrar()
+    filtrarVendors()
   })
 }
 const pintarFiltroPrecios = (listadoProductos) => {
+  //presentamos nueva seccion de formulario
   const myFieldSet = document.createElement('fieldset')
   myFieldSet.classList.add('priceClass')
-  const vendorFilterLabel = document.createElement('label')
-  vendorFilterLabel.innerHTML = 'Filtra por Vendedor'
-  myFieldSet.appendChild(vendorFilterLabel)
+  const priceFilterLabel = document.createElement('label')
+  priceFilterLabel.innerHTML = 'Filtra por Precio'
+  priceFilterLabel.setAttribute('for', 'priceFilter')
+  myFieldSet.appendChild(priceFilterLabel)
+  let myInput = document.createElement('input')
+  myInput.id = 'priceFilter'
+  myInput.type = 'number'
+  let myButton = document.createElement('input')
+  myButton.type = 'submit'
+  myButton.value = 'Filtra!'
+
+  //lo pegamos todo en el HTML
+  myFieldSet.appendChild(myInput)
+  myFieldSet.appendChild(myButton)
+  myForm.appendChild(myFieldSet)
 }
 
 document.getElementById('app').insertAdjacentElement('beforebegin', myForm)
