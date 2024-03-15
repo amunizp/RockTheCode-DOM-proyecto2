@@ -184,16 +184,48 @@ const pintarFiltroPrecios = (listadoProductos) => {
   myInput.type = 'number'
   let myButton = document.createElement('input')
   myButton.type = 'submit'
-  myButton.value = 'Filtra!'
+  myButton.value = 'Buscar'
 
   //lo pegamos todo en el HTML
   myFieldSet.appendChild(myInput)
   myFieldSet.appendChild(myButton)
   myForm.appendChild(myFieldSet)
+  myInput.addEventListener('submit', (event) => {
+    // precio = event.target.value
+    let precio = event
+    console.log(precio)
+    //TODO no se porque no funciona
+    // filtrarPrecios()
+  })
+  myButton.addEventListener('submit', (ev) => {
+    console.log(ev)
+    ev.preventDefault()
+    //TODO no se porque no funciona
+  })
 }
+const pintarLimpiarFitros = (listadoProductos) => {
+  //presentamos nueva seccion de formulario
+  const myFieldSet = document.createElement('fieldset')
+  myFieldSet.classList.add('cleanClass')
+  let myButton = document.createElement('input')
+  myButton.type = 'submit'
+  myButton.value = 'Limpiar Filtros'
 
+  //lo pegamos todo en el HTML
+
+  myFieldSet.appendChild(myButton)
+  myForm.appendChild(myFieldSet)
+
+  myButton.addEventListener('submit', (ev) => {
+    console.log(ev)
+    ev.preventDefault()
+    pintarProductos(listadoProductos)
+    //TODO no se porque no funciona
+  })
+}
 document.getElementById('app').insertAdjacentElement('beforebegin', myForm)
 
 pintarProductos(products)
 pintarFiltroVendedores(products)
 pintarFiltroPrecios(products)
+pintarLimpiarFitros(products)
