@@ -1,5 +1,6 @@
 import './style.css'
 let vendor = ''
+let maxPrice = '0'
 const products = [
   {
     name: '00 HP Essentials 255 G8 AMD',
@@ -14,8 +15,8 @@ const products = [
   // puedes cambiar los campos de cada objeto si es necesario para tu diseño...
   {
     name: '01 HP Essentials 255 G8 AMD',
-    price: 289,
-    stars: 4,
+    price: 300,
+    stars: 0,
     reviews: 250,
     seller: 'Pedro por su casa',
     image:
@@ -23,8 +24,8 @@ const products = [
   },
   {
     name: '02 HP Essentials 255 G8 AMD',
-    price: 289,
-    stars: 4,
+    price: 400,
+    stars: 1,
     reviews: 250,
     seller: 'Andres y otros tres',
     image:
@@ -32,8 +33,8 @@ const products = [
   },
   {
     name: '03 HP Essentials 255 G8 AMD',
-    price: 289,
-    stars: 4,
+    price: 200,
+    stars: 2,
     reviews: 250,
     seller: 'Fray Perico y su burrico',
     image:
@@ -41,8 +42,8 @@ const products = [
   },
   {
     name: '04 HP Essentials 255 G8 AMD',
-    price: 289,
-    stars: 4,
+    price: 250,
+    stars: 3,
     reviews: 250,
     seller: 'Fray Perico y su burrico',
     image:
@@ -50,7 +51,7 @@ const products = [
   },
   {
     name: '05 HP Essentials 255 G8 AMD',
-    price: 289,
+    price: 500,
     stars: 4,
     reviews: 250,
     seller: 'PcComponentes',
@@ -59,8 +60,8 @@ const products = [
   },
   {
     name: '06 HP Essentials 255 G8 AMD',
-    price: 289,
-    stars: 4,
+    price: 459,
+    stars: 5,
     reviews: 250,
     seller: 'PcComponentes',
     image:
@@ -68,7 +69,7 @@ const products = [
   },
   {
     name: '07 HP Essentials 255 G8 AMD',
-    price: 289,
+    price: 350,
     stars: 4,
     reviews: 250,
     seller: 'PcComponentes',
@@ -77,7 +78,7 @@ const products = [
   },
   {
     name: '08 HP Essentials 255 G8 AMD',
-    price: 289,
+    price: 450,
     stars: 4,
     reviews: 250,
     seller: 'PcComponentes',
@@ -86,7 +87,7 @@ const products = [
   },
   {
     name: '09 HP Essentials 255 G8 AMD',
-    price: 289,
+    price: 550,
     stars: 4,
     reviews: 250,
     seller: 'PcComponentes',
@@ -95,7 +96,7 @@ const products = [
   },
   {
     name: '10 HP Essentials 255 G8 AMD',
-    price: 289,
+    price: 489,
     stars: 4,
     reviews: 250,
     seller: 'PcComponentes',
@@ -108,14 +109,37 @@ const pintarProductos = (listadoProductos) => {
   const portatiles = document.querySelector('#app')
   portatiles.innerHTML = ''
   for (const producto of listadoProductos) {
+    let stars = ''
+    switch (producto.stars) {
+      case 0:
+        stars = '☆☆☆☆☆'
+        break
+      case 1:
+        stars = '★☆☆☆☆'
+        break
+      case 2:
+        stars = '★★☆☆☆'
+        break
+      case 3:
+        stars = '★★★☆☆'
+        break
+      case 4:
+        stars = '★★★★☆'
+        break
+      case 5:
+        stars = '★★★★★'
+        break
+      default:
+        console.log('no star rating')
+    }
     let productoHTML = `
           <div class="producto">
               <div class="img">
-                <img src="${producto.image}" width="200px"/>
+                <img src="${producto.image}" />
               </div>
               <h3>${producto.name}</h3>
               <p class= "price">${producto.price}</p>
-              <div class= "stars reviews">${producto.stars}<p class="reviews">${producto.reviews}</p></div>
+              <div class= "stars reviews"><p class="reviews">${stars} average out of ${producto.reviews} reviews!</p></div>
               <p class= "seller">${producto.seller}</div>
           </div>
       `
@@ -131,13 +155,42 @@ const filtrarVendors = () => {
     } else {
     }
   }
-  console.log(filtered)
-  console.log(vendor)
+  // console.log(filtered)
+  // console.log(vendor)
   if (vendor == '') {
     pintarProductos(products)
+    let header = document.querySelector('h1')
+    header.innerHTML = `Lista de Portatiles`
   } else {
     pintarProductos(filtered)
+    let header = document.querySelector('h1')
+
+    header.innerHTML = `Lista de productos de ${vendor}`
   }
+}
+const filtrarPrecios = (maxPrice) => {
+  const filtered = []
+  console.log(maxPrice)
+  for (const producto of products) {
+    if (producto.price <= maxPrice) {
+      filtered.push(producto)
+    } else {
+      console.log(producto.price)
+      console.log(filtered.price)
+    }
+  }
+  // console.log(filtered)
+  // console.log(vendor)
+  // if (maxPrice == '') {
+  //   pintarProductos(products)
+  // } else {
+  //   pintarProductos(filtered)
+  // }
+  let header = document.querySelector('h1')
+
+  header.innerHTML = `Lista de productos que valen menos que  £${maxPrice}`
+  pintarProductos(filtered)
+  //TODO en algún momento despues de pintar todo bien decide reiniciar vite. Porque?
 }
 const myForm = document.createElement('form')
 
@@ -190,18 +243,21 @@ const pintarFiltroPrecios = (listadoProductos) => {
   myFieldSet.appendChild(myInput)
   myFieldSet.appendChild(myButton)
   myForm.appendChild(myFieldSet)
-  myInput.addEventListener('submit', (event) => {
+  myInput.addEventListener('change', (event) => {
     // precio = event.target.value
-    let precio = event
-    console.log(precio)
-    //TODO no se porque no funciona
-    // filtrarPrecios()
+    let maxPrice = event.target.value
+    console.log(maxPrice)
+    //TODO no se porque no funciona no veo nada en la consola por alguna razon recarga VITE pero filterar por vendedor no lo hace?
+    //TODO funciona pero no como esperaría.
+    filtrarPrecios(maxPrice)
   })
-  myButton.addEventListener('submit', (ev) => {
-    console.log(ev)
-    ev.preventDefault()
-    //TODO no se porque no funciona
-  })
+  // myButton.addEventListener('submit', (ev) => {
+  //   console.log(ev)
+  //   let precio = ev.value
+  //   //ev.preventDefault() //creo que esto deberia evitar que funcione el submit de myinput
+  //   //TODO no se porque no funciona no veo nada en la consola
+  //   filtrarPrecios(precio)
+  // })
 }
 const pintarLimpiarFitros = (listadoProductos) => {
   //presentamos nueva seccion de formulario
@@ -218,9 +274,8 @@ const pintarLimpiarFitros = (listadoProductos) => {
 
   myButton.addEventListener('submit', (ev) => {
     console.log(ev)
-    ev.preventDefault()
     pintarProductos(listadoProductos)
-    //TODO no se porque no funciona
+    //TODO porque recarga la página entera?
   })
 }
 document.getElementById('app').insertAdjacentElement('beforebegin', myForm)
@@ -229,3 +284,5 @@ pintarProductos(products)
 pintarFiltroVendedores(products)
 pintarFiltroPrecios(products)
 pintarLimpiarFitros(products)
+//TODO idealmente mirar una manera de combinar los filtros.
+//Se podria hacer usando los valores flitrarvendors() dentro de flitrarPrecios() y al reves?
