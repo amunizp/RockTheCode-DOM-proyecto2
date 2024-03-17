@@ -1,7 +1,7 @@
+//? Modificaciones por David Machio Renes
 import './style.css'
 let vendor = ''
 let maxPrice = '0'
-let header = document.querySelector('h1')
 const products = [
   {
     name: '00 HP Essentials 255 G8 AMD',
@@ -109,10 +109,6 @@ const products = [
 const pintarProductos = (listadoProductos) => {
   const portatiles = document.querySelector('#app')
   portatiles.innerHTML = ''
-  if (listadoProductos === undefined || listadoProductos.length == 0) {
-    console.log('lista esta vacia')
-    header.innerHTML = `No hay productos con ese filtro `
-  }
   for (const producto of listadoProductos) {
     let stars = ''
     switch (producto.stars) {
@@ -143,7 +139,7 @@ const pintarProductos = (listadoProductos) => {
                 <img src="${producto.image}" />
               </div>
               <h3>${producto.name}</h3>
-              <p class= "price">£${producto.price}</p>
+              <p class= "price">${producto.price}</p>
               <div class= "stars reviews"><p class="reviews">${stars} average out of ${producto.reviews} reviews!</p></div>
               <p class= "seller">${producto.seller}</div>
           </div>
@@ -153,10 +149,11 @@ const pintarProductos = (listadoProductos) => {
 }
 const filtrarVendors = () => {
   const filtered = []
-
+  document.getElementById('priceFilter').value = ''
   for (const producto of products) {
     if (vendor.includes(producto.seller)) {
       filtered.push(producto)
+      maxPrice = '0'
     } else {
     }
   }
@@ -164,10 +161,13 @@ const filtrarVendors = () => {
   // console.log(vendor)
   if (vendor == '') {
     pintarProductos(products)
-
+    let header = document.querySelector('h1')
     header.innerHTML = `Lista de Portatiles`
+    maxPrice = '0'
   } else {
     pintarProductos(filtered)
+    maxPrice = '0'
+
     let header = document.querySelector('h1')
 
     header.innerHTML = `Lista de productos de ${vendor}`
@@ -184,13 +184,20 @@ const filtrarPrecios = (maxPrice) => {
       console.log(filtered.price)
     }
   }
+  // console.log(filtered)
+  // console.log(vendor)
+  // if (maxPrice == '') {
+  //   pintarProductos(products)
+  // } else {
+  //   pintarProductos(filtered)
+  // }
+  let header = document.querySelector('h1')
 
   header.innerHTML = `Lista de productos que valen menos que  £${maxPrice}`
   pintarProductos(filtered)
+  //TODO en algún momento despues de pintar todo bien decide reiniciar vite. Porque?
 }
 const myForm = document.createElement('form')
-//TODO comprobando stack exchange 3: https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit
-//myForm.onsubmit = 'pintarFiltroPrecios(products); return false'
 
 // document.body.appendChild(myFieldSet)
 const pintarFiltroVendedores = (listadoProductos) => {
@@ -233,19 +240,6 @@ const pintarFiltroPrecios = (listadoProductos) => {
   let myInput = document.createElement('input')
   myInput.id = 'priceFilter'
   myInput.type = 'number'
-  myInput.name = 'priceFilter'
-  //crear lista de precios
-  let listaPrecios = listadoProductos.map((producto) => producto.price)
-
-  let maxPrecio = Math.max(...listaPrecios)
-  let minPrecio = Math.min(...listaPrecios)
-  console.log(maxPrecio)
-  //let listOfVendors = [...vendors]
-  myInput.min = minPrecio //TODO extrae minimo de listaProductos
-  myInput.max = maxPrecio //TODO extra maximo de listProductos
-  //TODO no se por alguna razon intro en myInput recarga VITE
-  // myInput.disabled = 'disabled' //? añadi esto para ver que tal pero se desactiva del todo
-  //TODO pero filtrar por vendedor myBotton y no lo hace?
   let myButton = document.createElement('input')
   myButton.type = 'button'
   myButton.value = 'Buscar'
@@ -254,32 +248,22 @@ const pintarFiltroPrecios = (listadoProductos) => {
   myFieldSet.appendChild(myInput)
   myFieldSet.appendChild(myButton)
   myForm.appendChild(myFieldSet)
-  //TODO lo de aqui abajo tampoco parece evitar que se recargue la página
-  // myInput.addEventListener('number', (ev) => {
-  //   ev.preventDefault()
-  // })
-  //TODO comprobando stack exchange 1: https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit
-  // function handleForm(event) {
-  //   event.preventDefault()
-  // }
-  //myInput.addEventListener('submit', handleForm)
-  //TODO comprobando stack exchange 2: https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit
-  //myInput.onsubmit = 'return false'
-  //TODO Ya a la desessperada evitar que la tecla ENTER funcione en myINPUT?
-  //? En situaciones normales esto no lo pondría porque como usuario prefiero pulsar Enter
-  myInput.addEventListener('keydown', (event) => {
-    console.log(`${event.key}`)
-    if (event.key == 'Enter') {
-      console.log(` you pressed this ${event.key}`)
-      event.preventDefault()
-    }
-  })
-
-  myButton.addEventListener('click', (ev) => {
-    //ev.preventDefault() //TODO esto aqui no parece hacer nada para evitar myINPUT Submit
+  myButton.addEventListener('click', (event) => {
+    event.preventDefault()
+    // precio = event.target.value
     let maxPrice = myInput.value
+    console.log(maxPrice)
+    //TODO no se porque no funciona no veo nada en la consola por alguna razon recarga VITE pero filterar por vendedor no lo hace?
+    //TODO funciona pero no como esperaría.
     filtrarPrecios(maxPrice)
   })
+  // myButton.addEventListener('submit', (ev) => {
+  //   console.log(ev)
+  //   let precio = ev.value
+  //   //ev.preventDefault() //creo que esto deberia evitar que funcione el submit de myinput
+  //   //TODO no se porque no funciona no veo nada en la consola
+  //   filtrarPrecios(precio)
+  // })
 }
 const pintarLimpiarFitros = (listadoProductos) => {
   //presentamos nueva seccion de formulario
