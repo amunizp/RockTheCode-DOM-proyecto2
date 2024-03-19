@@ -1,6 +1,6 @@
 import './style.css'
 let vendor = ''
-let maxPrice = '0'
+
 let header = document.querySelector('h1')
 const products = [
   {
@@ -106,38 +106,44 @@ const products = [
   }
 ]
 
+let listaPrecios = products.map((producto) => producto.price)
+
+let startingMaxPrice = Math.max(...listaPrecios)
+let maxPrice = startingMaxPrice
+//let minPrecio = Math.min(...listaPrecios)
+let myInput = document.createElement('input')
 const pintarProductos = (listadoProductos) => {
   const portatiles = document.querySelector('#app')
   portatiles.innerHTML = ''
   if (listadoProductos === undefined || listadoProductos.length == 0) {
+    header.innerHTML = `No hay productos con ese filtro`
     console.log('lista esta vacia')
-    header.innerHTML = `No hay productos con ese filtro `
-  }
-  for (const producto of listadoProductos) {
-    let stars = ''
-    switch (producto.stars) {
-      case 0:
-        stars = '☆☆☆☆☆'
-        break
-      case 1:
-        stars = '★☆☆☆☆'
-        break
-      case 2:
-        stars = '★★☆☆☆'
-        break
-      case 3:
-        stars = '★★★☆☆'
-        break
-      case 4:
-        stars = '★★★★☆'
-        break
-      case 5:
-        stars = '★★★★★'
-        break
-      default:
-        console.log('no star rating')
-    }
-    let productoHTML = `
+  } else {
+    for (const producto of listadoProductos) {
+      let stars = ''
+      switch (producto.stars) {
+        case 0:
+          stars = '☆☆☆☆☆'
+          break
+        case 1:
+          stars = '★☆☆☆☆'
+          break
+        case 2:
+          stars = '★★☆☆☆'
+          break
+        case 3:
+          stars = '★★★☆☆'
+          break
+        case 4:
+          stars = '★★★★☆'
+          break
+        case 5:
+          stars = '★★★★★'
+          break
+        default:
+          console.log('no star rating')
+      }
+      let productoHTML = `
           <div class="producto">
               <div class="img">
                 <img src="${producto.image}" />
@@ -148,46 +154,11 @@ const pintarProductos = (listadoProductos) => {
               <p class= "seller">${producto.seller}</div>
           </div>
       `
-    portatiles.innerHTML += productoHTML
-  }
-}
-const filtrarVendors = () => {
-  const filtered = []
-
-  for (const producto of products) {
-    if (vendor.includes(producto.seller)) {
-      filtered.push(producto)
-    } else {
+      portatiles.innerHTML += productoHTML
     }
   }
-  // console.log(filtered)
-  // console.log(vendor)
-  if (vendor == '') {
-    pintarProductos(products)
-
-    header.innerHTML = `Lista de Portatiles`
-  } else {
-    pintarProductos(filtered)
-    let header = document.querySelector('h1')
-
-    header.innerHTML = `Lista de productos de ${vendor}`
-  }
 }
-const filtrarPrecios = (maxPrice) => {
-  const filtered = []
-  console.log(maxPrice)
-  for (const producto of products) {
-    if (producto.price <= maxPrice) {
-      filtered.push(producto)
-    } else {
-      console.log(producto.price)
-      console.log(filtered.price)
-    }
-  }
 
-  header.innerHTML = `Lista de productos que valen menos que  £${maxPrice}`
-  pintarProductos(filtered)
-}
 const myForm = document.createElement('form')
 //TODO comprobando stack exchange 3: https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit
 //myForm.onsubmit = 'pintarFiltroPrecios(products); return false'
@@ -217,9 +188,12 @@ const pintarFiltroVendedores = (listadoProductos) => {
   myForm.appendChild(myFieldSet)
 
   //avisa que algo cambia!
+
   mySelector.addEventListener('change', (event) => {
     vendor = event.target.value
-    filtrarVendors()
+    let maxPrice = myInput.value
+    console.log(`el vendor elegido es ${vendor}`)
+    FiltroCombinado(vendor, maxPrice)
   })
 }
 const pintarFiltroPrecios = (listadoProductos) => {
@@ -230,7 +204,7 @@ const pintarFiltroPrecios = (listadoProductos) => {
   priceFilterLabel.innerHTML = 'Filtra por Precio'
   priceFilterLabel.setAttribute('for', 'priceFilter')
   myFieldSet.appendChild(priceFilterLabel)
-  let myInput = document.createElement('input')
+
   myInput.id = 'priceFilter'
   myInput.type = 'number'
   myInput.name = 'priceFilter'
@@ -278,8 +252,69 @@ const pintarFiltroPrecios = (listadoProductos) => {
   myButton.addEventListener('click', (ev) => {
     //ev.preventDefault() //TODO esto aqui no parece hacer nada para evitar myINPUT Submit
     let maxPrice = myInput.value
-    filtrarPrecios(maxPrice)
+    console.log(`a ver si se ve el precio maximo ${maxPrice}`)
+    FiltroCombinado(vendor, maxPrice)
   })
+}
+const FiltroCombinado = (vendor = '', maxPrice) => {
+  const filtered = []
+  console.log(`lo que recibi como vendor es ${vendor}`)
+  console.log(`lo que recibi como precio es ${maxPrice}`)
+  for (const producto of products) {
+    if (producto.seller == vendor && producto.price <= maxPrice) {
+      filtered.push(producto)
+      console.log(
+        `como el vendedor es ${
+          producto.seller
+        } Asi que es ${producto.seller.includes(vendor)} y el precio es ${
+          producto.price
+        } lo guardo`
+      )
+    } else if (producto.seller == vendor && maxPrice == '') {
+      filtered.push(producto)
+      console.log(
+        `como el vendedor es sin filtro
+          miro solo el  precio que es ${producto.price} lo guardo`
+      )
+    } else if (vendor == '' && producto.price <= maxPrice) {
+      filtered.push(producto)
+      console.log(
+        `como el vendedor es sin filtro
+          miro solo el  precio que es ${producto.price} lo guardo`
+      )
+    } else if (vendor == '' && maxPrice == '') {
+      filtered.push(producto)
+      console.log(
+        `como el vendedor es sin filtro
+          miro solo el  precio que es ${producto.price} lo guardo`
+      )
+    } else {
+      console.log(
+        `I will not include to the filtered list ${producto.seller} porque es ${
+          producto.seller == vendor
+        } que sea lo mismo que ${vendor}. The price is ${
+          producto.price
+        } que es más que ${maxPrice} que me has dado`
+      )
+    }
+  }
+  //console.log(filtered)
+  console.log(`el vendor es ${vendor}`)
+
+  if (vendor == '' && (startingMaxPrice == maxPrice || maxPrice == '')) {
+    pintarProductos(products)
+
+    header.innerHTML = `Lista de Portatiles`
+  } else if (vendor != '' && maxPrice == '') {
+    header.innerHTML = `Lista de productos de ${vendor} sin limite de precio`
+  } else if (filtered.length == 0) {
+    pintarProductos(filtered)
+    header.innerHTML = `Te has pasado con el filtrado y te has quedao sin na`
+  } else {
+    pintarProductos(filtered)
+    let header = document.querySelector('h1')
+    header.innerHTML = `Lista de productos de ${vendor}  que valen menos que  £${maxPrice}`
+  }
 }
 const pintarLimpiarFitros = (listadoProductos) => {
   //presentamos nueva seccion de formulario
@@ -300,11 +335,13 @@ const pintarLimpiarFitros = (listadoProductos) => {
     //TODO porque recarga la página entera?
   })
 }
+
 document.getElementById('app').insertAdjacentElement('beforebegin', myForm)
 
 pintarProductos(products)
 pintarFiltroVendedores(products)
 pintarFiltroPrecios(products)
 pintarLimpiarFitros(products)
+
 //TODO idealmente mirar una manera de combinar los filtros.
 //Se podria hacer usando los valores flitrarvendors() dentro de flitrarPrecios() y al reves?
