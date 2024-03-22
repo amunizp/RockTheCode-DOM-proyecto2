@@ -261,37 +261,46 @@ const FiltroCombinado = (vendor = '', maxPrice) => {
   console.log(`lo que recibi como vendor es ${vendor}`)
   console.log(`lo que recibi como precio es ${maxPrice}`)
   for (const producto of products) {
-    if (producto.seller == vendor && producto.price <= maxPrice) {
+    // if (producto.seller == vendor && producto.price <= maxPrice) {
+    //   filtered.push(producto)
+    //   console.log(
+    //     `como el vendedor es ${
+    //       producto.seller
+    //     } Asi que es ${producto.seller.includes(vendor)} y el precio es ${
+    //       producto.price
+    //     } lo guardo`
+    //   )
+    // } else if (producto.seller == vendor && maxPrice == '') {
+    //   filtered.push(producto)
+    //   console.log(
+    //     `como el vendedor es sin filtro
+    //       miro solo el  precio que es ${producto.price} lo guardo`
+    //   )
+    // } else if (vendor == '' && producto.price <= maxPrice) {
+    //   filtered.push(producto)
+    //   console.log(
+    //     `como el vendedor es sin filtro
+    //       miro solo el  precio que es ${producto.price} lo guardo`
+    //   )
+    // } else if (vendor == '' && maxPrice == '') {
+    //   filtered.push(producto)
+    //   console.log(
+    //     `como el vendedor es sin filtro
+    //       miro solo el  precio que es ${producto.price} lo guardo`
+    //   )
+    if (
+      (producto.seller === vendor || vendor === '') &&
+      (maxPrice === '' || producto.price <= maxPrice)
+    ) {
       filtered.push(producto)
-      console.log(
-        `como el vendedor es ${
-          producto.seller
-        } Asi que es ${producto.seller.includes(vendor)} y el precio es ${
-          producto.price
-        } lo guardo`
-      )
-    } else if (producto.seller == vendor && maxPrice == '') {
-      filtered.push(producto)
-      console.log(
-        `como el vendedor es sin filtro
-          miro solo el  precio que es ${producto.price} lo guardo`
-      )
-    } else if (vendor == '' && producto.price <= maxPrice) {
-      filtered.push(producto)
-      console.log(
-        `como el vendedor es sin filtro
-          miro solo el  precio que es ${producto.price} lo guardo`
-      )
-    } else if (vendor == '' && maxPrice == '') {
-      filtered.push(producto)
-      console.log(
-        `como el vendedor es sin filtro
-          miro solo el  precio que es ${producto.price} lo guardo`
-      )
+      pintarProductos(filtered)
+      // if (maxPrice === '') {
+      //   maxprice = startingMaxPrice
+      // }
     } else {
       console.log(
         `I will not include to the filtered list ${producto.seller} porque es ${
-          producto.seller == vendor
+          producto.seller === vendor
         } que sea lo mismo que ${vendor}. The price is ${
           producto.price
         } que es más que ${maxPrice} que me has dado`
@@ -301,19 +310,31 @@ const FiltroCombinado = (vendor = '', maxPrice) => {
   //console.log(filtered)
   console.log(`el vendor es ${vendor}`)
 
-  if (vendor == '' && (startingMaxPrice == maxPrice || maxPrice == '')) {
-    pintarProductos(products)
+  // if (vendor == '' && (startingMaxPrice == maxPrice || maxPrice == '')) {
+  //   pintarProductos(products)
 
-    header.innerHTML = `Lista de Portatiles`
-  } else if (vendor != '' && maxPrice == '') {
-    header.innerHTML = `Lista de productos de ${vendor} sin limite de precio`
-  } else if (filtered.length == 0) {
-    pintarProductos(filtered)
-    header.innerHTML = `Te has pasado con el filtrado y te has quedao sin na`
-  } else {
+  //   header.innerHTML = `Lista de Portatiles`
+  // } else if (vendor != '' && maxPrice == '') {
+  //   header.innerHTML = `Lista de productos de ${vendor} sin limite de precio`
+  // } else if (filtered.length == 0) {
+  //   pintarProductos(filtered)
+  //   header.innerHTML = `Te has pasado con el filtrado y te has quedao sin na`
+  // } else {
+  //   pintarProductos(filtered)
+  //   let header = document.querySelector('h1')
+  //   header.innerHTML = `Lista de productos  ${vendor}  que valen menos que  £${maxPrice}`
+  // }
+  if (filtered.length > 0) {
     pintarProductos(filtered)
     let header = document.querySelector('h1')
-    header.innerHTML = `Lista de productos de ${vendor}  que valen menos que  £${maxPrice}`
+    if (maxPrice === '') {
+      header.innerHTML = `Lista de productos  ${vendor}  que valen menos que  £${startingMaxPrice}`
+    } else {
+      header.innerHTML = `Lista de productos  ${vendor}  que valen menos que  £${maxPrice}`
+    }
+  } else {
+    pintarProductos(filtered)
+    header.innerHTML = `Te has pasado con el filtrado y te has quedao sin na`
   }
 }
 const pintarLimpiarFitros = (listadoProductos) => {
